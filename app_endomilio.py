@@ -2,9 +2,9 @@ import tkinter as tk
 from tkinter import ttk, messagebox
 import pyodbc
 
-# ==========================================
+
 # 1. CONFIGURACIÓN DE LA CONEXIÓN A AZURE
-# ==========================================
+
 connection_string = (
     'Driver={ODBC Driver 18 for SQL Server};'
     'Server=tcp:server-endomilio-2026.database.windows.net,1433;'
