@@ -1,34 +1,26 @@
-import tkinter as tk
-from tkinter import ttk, messagebox
-import pyodbc
-
-
-# 1. CONFIGURACIÓN DE LA CONEXIÓN A AZURE
-
+import tkinter as tkfrom
+tkinter import ttk, messageboximport pyodbc # CONFIGURACION DE LA BASE DE DATOS EN AZURE (Actualizado)
+# Nota: Asegurarse de tener instalado el ODBC Driver 18 # Cadena de conexion oficial al servidor Endomilio
 connection_string = (
     'Driver={ODBC Driver 18 for SQL Server};'
     'Server=tcp:server-endomilio-2026.database.windows.net,1433;'
     'Database=BD_Endomilio;'
     'Uid=admin_endomilio;'
-    'Pwd=CorazonDoki12;'
+    'Pwd=TU_CONTRASEÑA_AQUI;'
     'Encrypt=yes;'
     'TrustServerCertificate=no;'
     'Connection Timeout=30;'
-)
-
-def ejecutar_consulta(query):
-    """Conecta a Azure, ejecuta la consulta y devuelve los resultados."""
+)def ejecutar_consulta(query):
+    # Funcion centralizada para manejar la conexion y evitar bloqueos
     try:
-        conn = pyodbc.connect(connection_string, timeout=10)
-        cursor = conn.cursor()
+        conexion = pyodbc.connect(connection_string)
+        cursor = conexion.cursor()
         cursor.execute(query)
-        filas = cursor.fetchall()
-        columnas = [column[0] for column in cursor.description]
-        conn.close()
-        return columnas, filas
+        # Retorna todas las filas encontradas
+        return cursor.fetchall()
     except Exception as e:
-        messagebox.showerror("Error de Conexión", f"No se pudo conectar a Azure:\n{e}")
-        return None, None
+        messagebox.showerror("Error de Conexion", f"No se pudo conectar a Azure:\n{e}")
+        return []
 
 def ejecutar_accion(query, parametros):
     """Función para hacer INSERT, UPDATE y DELETE (Guardar cambios en Azure)"""
