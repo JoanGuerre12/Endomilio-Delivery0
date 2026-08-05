@@ -4,9 +4,9 @@ Este repositorio contiene la implementación del proyecto de Sistemas de Bases d
 
 ## 👥 Integrantes del Equipo
 
-* **Integrante 1 (Compañero A):** [Guerrero Bajaña Joan Alberto] - [Script de BD]
-* **Integrante 2 (Compañero B):** [Jeremy Santiago Ambi Tapia] - [Documentación y README]
-* **Integrante 3 (Compañero C):** [Chavez Giler Galo Sebastian] - [Conexión Azure]
+* **Integrante 1 :** [Guerrero Bajaña Joan Alberto] - [Implementacíon del CRUD]
+* **Integrante 2 :** [Jeremy Santiago Ambi Tapia] - [Documentación y README]
+* **Integrante 3 :** [Chavez Giler Galo Sebastian] - [Script de la Base de Datos]
 
 ---
 
