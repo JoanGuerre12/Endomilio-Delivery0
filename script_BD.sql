@@ -32,9 +32,9 @@ CREATE TABLE DETALLE_PEDIDO (
     FOREIGN KEY (Id_Producto) REFERENCES PRODUCTO(Id_Producto)
 );
 
--- ==========================================
+
 -- 2. INSERCIÓN DE DATOS INICIALES
--- ==========================================
+
 
 -- Insertar Clientes
 INSERT INTO CLIENTE (Id_Cliente, Nombre, Telefono, Direccion_Entrega) VALUES 
