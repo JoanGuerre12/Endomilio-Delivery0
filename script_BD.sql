@@ -32,6 +32,34 @@ CREATE TABLE DETALLE_PEDIDO (
     FOREIGN KEY (Id_Producto) REFERENCES PRODUCTO(Id_Producto)
 );
 
+-- ==========================================
+-- 2. INSERCIÓN DE DATOS INICIALES
+-- ==========================================
+
+-- Insertar Clientes
+INSERT INTO CLIENTE (Id_Cliente, Nombre, Telefono, Direccion_Entrega) VALUES 
+('0912345678', 'Carlos Zambrano', '0991112233', 'Sauces 8, Guayaquil'),
+('0987654321', 'Andrea Gomez', '0982223344', 'Samanes 2, Guayaquil');
+
+-- Insertar Productos
+INSERT INTO PRODUCTO (Id_Producto, Nombre_Producto, Precio, Estado_Activo) VALUES 
+('PR001', 'Combo Hamburguesa', 5.50, '1'),
+('PR002', 'Alitas BBQ (6 uds)', 6.00, '1'),
+('PR003', 'Gaseosa 1L', 1.50, '1');
+
+-- Insertar Pedidos
+INSERT INTO PEDIDO (Id_Pedido, Id_Cliente, Fecha_Hora_Creacion, Monto_Total, Estado) VALUES 
+('PD-0001', '0912345678', '2026-08-04 19:30:00', 7.00, 'Entregado'),
+('PD-0002', '0987654321', '2026-08-04 20:00:00', 6.00, 'En camino');
+
+-- Insertar Detalles del Pedido (Relación Muchos a Muchos)
+-- Asumiendo que tu tabla se llama DETALLE_PEDIDO
+INSERT INTO DETALLE_PEDIDO (Id_Pedido, Id_Producto, Cantidad, Subtotal) VALUES 
+('PD-0001', 'PR001', 1, 5.50),
+('PD-0001', 'PR003', 1, 1.50),
+('PD-0002', 'PR002', 1, 6.00);
+
+
 -- 2. INSERCION DE DATOS DE TESTEO
 INSERT INTO CLIENTE VALUES 
 ('0912345671', 'Carlos Mendoza', '0991234561', 'Urdesa Central, Calle 1'),
