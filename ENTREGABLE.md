@@ -61,7 +61,10 @@ Para Actualizar el precio o nombre de un producto existente, ingrese el ID del p
 
 Para Eliminar un producto del catálogo, basta con ingresar su ID en la primera casilla y presionar el botón rojo "Eliminar".
 
-4. Módulo de Asignación 
+4. Módulo de Asignación
+
+<img width="395" height="177" alt="image" src="https://github.com/user-attachments/assets/d5dd8c21-1761-4e28-b004-17d938525799" />
+
 Asignar Productos a Pedido:
 
 Haga clic en el botón "🔗 Asignar Productos a Pedido".
@@ -70,12 +73,14 @@ Esta interfaz gestiona el detalle de cada orden. Para agregar un ítem, ingrese 
 
 Defina la Cantidad a comprar y presione el botón verde "Añadir al Pedido". El sistema calculará automáticamente el subtotal multiplicando el precio del producto por la cantidad ingresada y guardará el registro en la base de datos.
 
+<img width="310" height="180" alt="image" src="https://github.com/user-attachments/assets/2b287509-e66c-4f19-b3c8-86cddd65d801" />
+
 Si el cliente desea retirar un ítem de su orden, ingrese el ID del Pedido y el ID del Producto correspondiente, y presione el botón rojo "Quitar del Pedido".
 ---
 
 ## 🎥 Video Explicativo
 
-En el siguiente video detallamos el trabajo realizado por cada uno de los integrantes del equipo (Duración máxima: 10 minutos).
+En el siguiente video detallamos el trabajo realizado por cada uno de los integrantes del equipo.
 
 🔗 **[Enlace al video de YouTube / Google Drive aquí]**
 
