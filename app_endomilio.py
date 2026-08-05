@@ -1,25 +1,34 @@
-import tkinter as tkfrom
-tkinter import ttk, messageboximport pyodbc 
+import tkinter as tk
+from tkinter import ttk, messagebox
+import pyodbc
+
+# ==========================================
+# 1. CONFIGURACIÓN DE LA CONEXIÓN A AZURE
+# ==========================================
 connection_string = (
     'Driver={ODBC Driver 18 for SQL Server};'
     'Server=tcp:server-endomilio-2026.database.windows.net,1433;'
     'Database=BD_Endomilio;'
     'Uid=admin_endomilio;'
-    'Pwd=TU_CONTRASEÑA_AQUI;'
+    'Pwd=CorazonDoki12;'
     'Encrypt=yes;'
     'TrustServerCertificate=no;'
     'Connection Timeout=30;'
-)def ejecutar_consulta(query):
-    
+)
+
+def ejecutar_consulta(query):
+    """Conecta a Azure, ejecuta la consulta y devuelve los resultados."""
     try:
-        conexion = pyodbc.connect(connection_string)
-        cursor = conexion.cursor()
+        conn = pyodbc.connect(connection_string, timeout=10)
+        cursor = conn.cursor()
         cursor.execute(query)
-        
-        return cursor.fetchall()
+        filas = cursor.fetchall()
+        columnas = [column[0] for column in cursor.description]
+        conn.close()
+        return columnas, filas
     except Exception as e:
-        messagebox.showerror("Error de Conexion", f"No se pudo conectar a Azure:\n{e}")
-        return []
+        messagebox.showerror("Error de Conexión", f"No se pudo conectar a Azure:\n{e}")
+        return None, None
 
 def ejecutar_accion(query, parametros):
     """Función para hacer INSERT, UPDATE y DELETE (Guardar cambios en Azure)"""
@@ -27,7 +36,7 @@ def ejecutar_accion(query, parametros):
         conexion = pyodbc.connect(connection_string)
         cursor = conexion.cursor()
         cursor.execute(query, parametros)
-        conexion.commit() # 
+        conexion.commit() # Esto es lo que guarda el cambio en la nube
         conexion.close()
         return True
     except Exception as e:
@@ -126,9 +135,9 @@ def abrir_crud_productos():
 
     frame_botones = tk.Frame(ventana_prod)
     frame_botones.pack(pady=15)
-    tk.Button(frame_botones, text="Añadir (C)", command=insertar, bg="lightgreen").grid(row=0, column=0, padx=5)
-    tk.Button(frame_botones, text="Actualizar (U)", command=actualizar, bg="lightblue").grid(row=0, column=1, padx=5)
-    tk.Button(frame_botones, text="Eliminar (D)", command=eliminar, bg="salmon").grid(row=0, column=2, padx=5)
+    tk.Button(frame_botones, text="Añadir", command=insertar, bg="lightgreen").grid(row=0, column=0, padx=5)
+    tk.Button(frame_botones, text="Actualizar", command=actualizar, bg="lightblue").grid(row=0, column=1, padx=5)
+    tk.Button(frame_botones, text="Eliminar", command=eliminar, bg="salmon").grid(row=0, column=2, padx=5)
 
 def abrir_crud_detalle():
     """Ventana CRUD - Tabla Muchos a Muchos (DETALLE_PEDIDO)"""
@@ -188,7 +197,7 @@ def abrir_crud_detalle():
 # ==========================================
 root = tk.Tk()
 root.title("Sistema Gestor - Endomilio Delivery")
-root.geometry("400x380") 
+root.geometry("400x380") # Ampliado para que entren los nuevos botones
 
 tk.Label(root, text="Panel de Administración", font=("Arial", 16, "bold")).pack(pady=(20, 5))
 tk.Label(root, text="Conectado a Azure SQL Database", fg="green").pack(pady=(0, 15))
