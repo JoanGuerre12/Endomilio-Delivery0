@@ -16,22 +16,25 @@ Este repositorio contiene la implementación del proyecto de Sistemas de Bases d
 El código fuente de la aplicación (`app_endomilio.py`) y el script de la base de datos con los registros (`script_BD.sql`) se encuentran en la raíz de este repositorio.
 
 ### 2. Esquema de la Base de Datos
-*A continuación se presenta el esquema relacional utilizado para el proyecto:*
+El proyecto cuenta con el siguiente esquema relacional estructurado para manejar las operaciones del delivery:
 
-> **[Nota para ti:]** Si tienen una imagen del modelo relacional, pueden subirla a GitHub y colocarla aquí, o simplemente describir las tablas brevemente:
-> 
-> * **Tabla A:** [Descripción]
-> * **Tabla B:** [Descripción]
-> * **Tabla de Relación (Muchos a Muchos):** [Descripción]
+* **Tabla CLIENTE:** Almacena la información de los usuarios que realizan compras (Cédula/ID, Nombre, Teléfono y Dirección de entrega).
+* **Tabla PRODUCTO:** Funciona como el catálogo del menú (ID del producto, Nombre, Precio y si está Activo).
+* **Tabla PEDIDO:** Registra las órdenes generales generadas por los clientes (Incluye el Cliente, la Fecha/Hora, el Monto Total y el Estado del pedido, como "En camino" o "Entregado").
+* **Tabla DETALLE_PEDIDO (Relación Muchos a Muchos):** Es la tabla que rompe la relación entre Pedidos y Productos. Detalla qué productos específicos y en qué cantidades van dentro de un pedido, calculando su subtotal.
 
 ### 3. Manual de Usuario (Nuevas Interfaces)
-*Explica brevemente cómo usar la aplicación para añadir, consultar, editar y eliminar registros (CRUD).*
+La aplicación cuenta con interfaces gráficas que permiten realizar operaciones CRUD (Crear, Leer, Actualizar y Eliminar) sobre la base de datos de Endomilio.
 
-1. **Conexión:** Al ejecutar `app_endomilio.py`, el sistema se conectará a la base de datos.
-2. **Añadir un registro:** [Explica los pasos en tu interfaz]
-3. **Consultar:** [Explica los pasos en tu interfaz]
-4. **Editar:** [Explica los pasos en tu interfaz]
-5. **Eliminar:** [Explica los pasos en tu interfaz]
+1. **Gestión de Clientes y Productos (Tablas Principales):**
+   * **Añadir:** Permite registrar nuevos clientes con sus datos de contacto o agregar nuevos platos al catálogo de productos.
+   * **Consultar:** Muestra la lista de clientes registrados y el menú de productos disponibles.
+   * **Editar:** Permite actualizar la dirección de un cliente o cambiar el precio/estado de un producto.
+   * **Eliminar:** Borra registros de clientes o productos (siempre y cuando no tengan pedidos asociados).
+
+2. **Gestión de Pedidos (Relación Muchos a Muchos):**
+   * **Crear Pedido:** Al generar una nueva orden, el sistema permite seleccionar el Cliente y luego ir añadiendo múltiples Productos al `DETALLE_PEDIDO`, calculando el subtotal por cantidad y el monto total final.
+   * **Consultar y Actualizar:** Se pueden visualizar los pedidos históricos y actualizar su estado (por ejemplo, pasar de "En camino" a "Entregado").
 
 ---
 
