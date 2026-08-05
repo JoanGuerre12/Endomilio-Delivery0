@@ -90,4 +90,7 @@ En el siguiente video detallamos el trabajo realizado por cada uno de los integr
 
 * ✅ **Control de Versiones:** Uso activo de GitHub para trabajo colaborativo. Se implementó un repositorio remoto donde todos los miembros del equipo realizaron commits integrando el código fuente en Python, el script SQL y la documentación, demostrando el manejo del historial de versiones.
 * ✅ **Máquina Virtual / Azure:** [Si usaron Azure o máquina virtual local como pedía la rúbrica, expliquen brevemente aquí cómo lo ejecutaron o pongan capturas].
-> Reporte finalizado por el integrante A.
+rama-B
+Revisión de base de datos terminada por integrante B.
+Reporte finalizado por el integrante A.
+main
