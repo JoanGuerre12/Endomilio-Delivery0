@@ -82,7 +82,7 @@ Si el cliente desea retirar un ítem de su orden, ingrese el ID del Pedido y el 
 
 En el siguiente video detallamos el trabajo realizado por cada uno de los integrantes del equipo.
 
-🔗 **[Enlace al video de YouTube / Google Drive aquí]**
+🔗 https://youtu.be/PB9Qjh1HQdA
 
 ---
 
