@@ -25,18 +25,52 @@ El proyecto cuenta con el siguiente esquema relacional estructurado para manejar
 * **Tabla DETALLE_PEDIDO (Relación Muchos a Muchos):** Es la tabla que rompe la relación entre Pedidos y Productos. Detalla qué productos específicos y en qué cantidades van dentro de un pedido, calculando su subtotal.
 
 ### 3. Manual de Usuario (Nuevas Interfaces)
-La aplicación cuenta con interfaces gráficas que permiten realizar operaciones CRUD (Crear, Leer, Actualizar y Eliminar) sobre la base de datos de Endomilio.
+1. Panel Principal
 
-1. **Gestión de Clientes y Productos (Tablas Principales):**
-   * **Añadir:** Permite registrar nuevos clientes con sus datos de contacto o agregar nuevos platos al catálogo de productos.
-   * **Consultar:** Muestra la lista de clientes registrados y el menú de productos disponibles.
-   * **Editar:** Permite actualizar la dirección de un cliente o cambiar el precio/estado de un producto.
-   * **Eliminar:** Borra registros de clientes o productos (siempre y cuando no tengan pedidos asociados).
+<img width="495" height="507" alt="image" src="https://github.com/user-attachments/assets/82f1340c-8636-4ee8-b015-de9efff169ba" />
 
-2. **Gestión de Pedidos (Relación Muchos a Muchos):**
-   * **Crear Pedido:** Al generar una nueva orden, el sistema permite seleccionar el Cliente y luego ir añadiendo múltiples Productos al `DETALLE_PEDIDO`, calculando el subtotal por cantidad y el monto total final.
-   * **Consultar y Actualizar:** Se pueden visualizar los pedidos históricos y actualizar su estado (por ejemplo, pasar de "En camino" a "Entregado").
+Al ejecutar la aplicación, se mostrará la ventana principal que confirma la conexión a Azure SQL Database. Desde aquí, el usuario puede navegar a cuatro módulos principales divididos en Consultas y Acciones.
 
+2. Módulo de Consultas 
+
+<img width="742" height="407" alt="image" src="https://github.com/user-attachments/assets/10df18a5-406d-4db5-b79a-c1e511fa6801" />
+
+Ver Menú de Productos:
+
+Haga clic en el botón "Ver Menú de Productos".
+
+Se abrirá una nueva ventana mostrando una tabla con el catálogo completo de productos disponibles, detallando su ID, Nombre, Precio y si se encuentran activos.
+
+Ver Registro de Pedidos:
+
+Haga clic en el botón "🛵 Ver Registro de Pedidos".
+
+El sistema desplegará el historial completo de órdenes generadas, mostrando el ID del pedido, el nombre del cliente asociado, la fecha/hora de creación, el monto total a pagar y el estado actual del envío.
+
+3. Módulo de Gestión 
+
+<img width="496" height="427" alt="image" src="https://github.com/user-attachments/assets/79556316-21d7-4851-a3b1-9cc85caf2677" />
+
+Administrar Productos:
+
+Haga clic en el botón "Administrar Productos (CRUD)".
+
+Se abrirá un formulario. Para registrar un nuevo plato al menú, llene los campos solicitados: ID Producto (ej. PR005), Nombre del Producto, Precio (ej. 5.50) y Estado Activo (S/N), y presione el botón verde "Añadir".
+
+Para Actualizar el precio o nombre de un producto existente, ingrese el ID del producto que desea modificar, coloque los nuevos valores en las casillas correspondientes y presione el botón azul "Actualizar".
+
+Para Eliminar un producto del catálogo, basta con ingresar su ID en la primera casilla y presionar el botón rojo "Eliminar".
+
+4. Módulo de Asignación 
+Asignar Productos a Pedido:
+
+Haga clic en el botón "🔗 Asignar Productos a Pedido".
+
+Esta interfaz gestiona el detalle de cada orden. Para agregar un ítem, ingrese un ID de Pedido válido (previamente creado por un cliente) y un ID de Producto que exista en el catálogo.
+
+Defina la Cantidad a comprar y presione el botón verde "Añadir al Pedido". El sistema calculará automáticamente el subtotal multiplicando el precio del producto por la cantidad ingresada y guardará el registro en la base de datos.
+
+Si el cliente desea retirar un ítem de su orden, ingrese el ID del Pedido y el ID del Producto correspondiente, y presione el botón rojo "Quitar del Pedido".
 ---
 
 ## 🎥 Video Explicativo
