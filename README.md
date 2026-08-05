@@ -4,9 +4,9 @@ Este repositorio contiene la implementación del proyecto de Sistemas de Bases d
 
 ## 👥 Integrantes del Equipo
 
-* **Integrante 1 (Compañero A):** [Nombre del integrante] - [Breve descripción de lo que hizo, ej. Script de BD]
-* **Integrante 2 (Compañero B):** [Tu Nombre] - [Breve descripción de lo que hiciste, ej. Documentación y README]
-* **Integrante 3 (Compañero C):** [Nombre del integrante] - [Breve descripción de lo que hizo, ej. Conexión Azure]
+* **Integrante 1 (Compañero A):** [Guerrero Bajaña Joan Alberto] - [Script de BD]
+* **Integrante 2 (Compañero B):** [Jeremy Santiago Ambi Tapia] - [Documentación y README]
+* **Integrante 3 (Compañero C):** [Chavez Giler Galo Sebastian] - [Conexión Azure]
 
 ---
 
