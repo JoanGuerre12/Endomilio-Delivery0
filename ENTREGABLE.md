@@ -1,4 +1,4 @@
-# 📦 Proyecto Endomilio - Delivery
+# Proyecto Endomilio - Delivery
 
 Este repositorio contiene la implementación del proyecto de Sistemas de Bases de Datos, el cual incluye las operaciones CRUD para las tablas principales y las tablas generadas por relaciones de muchos a muchos.
 
