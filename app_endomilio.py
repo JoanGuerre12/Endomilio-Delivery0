@@ -1,6 +1,5 @@
 import tkinter as tkfrom
-tkinter import ttk, messageboximport pyodbc # CONFIGURACION DE LA BASE DE DATOS EN AZURE (Actualizado)
-# Nota: Asegurarse de tener instalado el ODBC Driver 18 # Cadena de conexion oficial al servidor Endomilio
+tkinter import ttk, messageboximport pyodbc 
 connection_string = (
     'Driver={ODBC Driver 18 for SQL Server};'
     'Server=tcp:server-endomilio-2026.database.windows.net,1433;'
@@ -11,12 +10,12 @@ connection_string = (
     'TrustServerCertificate=no;'
     'Connection Timeout=30;'
 )def ejecutar_consulta(query):
-    # Funcion centralizada para manejar la conexion y evitar bloqueos
+    
     try:
         conexion = pyodbc.connect(connection_string)
         cursor = conexion.cursor()
         cursor.execute(query)
-        # Retorna todas las filas encontradas
+        
         return cursor.fetchall()
     except Exception as e:
         messagebox.showerror("Error de Conexion", f"No se pudo conectar a Azure:\n{e}")
@@ -28,7 +27,7 @@ def ejecutar_accion(query, parametros):
         conexion = pyodbc.connect(connection_string)
         cursor = conexion.cursor()
         cursor.execute(query, parametros)
-        conexion.commit() # Esto es lo que guarda el cambio en la nube
+        conexion.commit() # 
         conexion.close()
         return True
     except Exception as e:
@@ -189,7 +188,7 @@ def abrir_crud_detalle():
 # ==========================================
 root = tk.Tk()
 root.title("Sistema Gestor - Endomilio Delivery")
-root.geometry("400x380") # Ampliado para que entren los nuevos botones
+root.geometry("400x380") 
 
 tk.Label(root, text="Panel de Administración", font=("Arial", 16, "bold")).pack(pady=(20, 5))
 tk.Label(root, text="Conectado a Azure SQL Database", fg="green").pack(pady=(0, 15))
