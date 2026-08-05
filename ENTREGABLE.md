@@ -4,7 +4,7 @@ Este repositorio contiene la implementación del proyecto de Sistemas de Bases d
 
 ## 👥 Integrantes del Equipo
 
-* **Integrante 1 :** [Guerrero Bajaña Joan Alberto] - [Implementacíon del CRUD]
+* **Integrante 1 :** [Guerrero Bajaña Joan Alberto] - [Implementacíon del CRUD Y manual de usuario]
 * **Integrante 2 :** [Jeremy Santiago Ambi Tapia] - [Documentación y README]
 * **Integrante 3 :** [Franco Suarez Teddy Saul] - [Script de la Base de Datos]
 * **Integrante 4 :** [Chavez Giler Galo Sebastian] - [Script de la Base de Datos]
