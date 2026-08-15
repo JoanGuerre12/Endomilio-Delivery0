@@ -116,22 +116,27 @@ def abrir_crud_productos():
     txt_estado.pack()
 
     def insertar():
-        query = "INSERT INTO PRODUCTO (Id_Producto, Nombre_Producto, Precio, Estado_Activo) VALUES (?, ?, ?, ?)"
+        # Llamamos al Stored Procedure
+        query = "EXEC sp_InsertarProducto ?, ?, ?, ?"
+        # El orden de los parámetros debe ser exacto al del SP en Azure
         params = (txt_id.get(), txt_nombre.get(), float(txt_precio.get()), txt_estado.get())
         if ejecutar_accion(query, params):
-            messagebox.showinfo("Éxito", "Producto añadido correctamente.")
+            messagebox.showinfo("Éxito", "Producto añadido correctamente (Vía SP).")
 
     def actualizar():
-        query = "UPDATE PRODUCTO SET Nombre_Producto = ?, Precio = ?, Estado_Activo = ? WHERE Id_Producto = ?"
-        params = (txt_nombre.get(), float(txt_precio.get()), txt_estado.get(), txt_id.get())
+        # Llamamos al Stored Procedure
+        query = "EXEC sp_ActualizarProducto ?, ?, ?, ?"
+        # OJO: Aquí el orden cambia respecto al avance anterior para coincidir con el SP
+        params = (txt_id.get(), txt_nombre.get(), float(txt_precio.get()), txt_estado.get())
         if ejecutar_accion(query, params):
-            messagebox.showinfo("Éxito", "Producto actualizado correctamente.")
+            messagebox.showinfo("Éxito", "Producto actualizado correctamente (Vía SP).")
 
     def eliminar():
-        query = "DELETE FROM PRODUCTO WHERE Id_Producto = ?"
+        # Llamamos al Stored Procedure
+        query = "EXEC sp_EliminarProducto ?"
         params = (txt_id.get(),)
         if ejecutar_accion(query, params):
-            messagebox.showinfo("Éxito", "Producto eliminado correctamente.")
+            messagebox.showinfo("Éxito", "Producto eliminado correctamente (Vía SP).")
 
     frame_botones = tk.Frame(ventana_prod)
     frame_botones.pack(pady=15)
