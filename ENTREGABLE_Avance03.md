@@ -22,3 +22,13 @@
 3. idx_Pedido_Estado: Mejora la velocidad de los filtros operativos (ej. filtrar solo "En camino").
 4. idx_Detalle_IdProducto: Agiliza los cálculos matemáticos agrupados sobre el rendimiento del menú.
 5. idx_Pedido_FechaCreacion: Indexa la fecha para que auditorías mensuales eviten escanear toda la tabla.
+## 🔐 3. Seguridad
+**Control de Accesos (Usuarios y Permisos):**
+
+| Usuario | Permiso 1 | Permiso 2 | Justificación |
+| :--- | :--- | :--- | :--- |
+| **User_Gerente** | `EXECUTE` en `sp_InsertarProducto` | `SELECT` en `vw_ReporteVentasPorCliente` | Agrega platos y ve ventas generales. |
+| **User_Cajero** | `EXECUTE` en `sp_ActualizarProducto` | `SELECT` en `vw_ReporteHistorialDetallado` | Corrige precios y revisa historial. |
+| **User_Atencion** | `SELECT` en `CLIENTE` | `SELECT` en `vw_ReporteProductosMasVendidos` | Revisa clientes y platos populares. |
+| **User_Analista** | `SELECT` en `vw_ReporteIngresosPorEstado`| `SELECT` en `vw_ReporteVentasPorCliente` | Función 100% analítica con vistas. |
+| **User_Auditor** | `SELECT` en `AUDITORIA_PRECIOS` | `SELECT` en `vw_ReporteIngresosPorEstado` | Audita historial de precios y estados. |
