@@ -113,4 +113,23 @@ CREATE NONCLUSTERED INDEX idx_Pedido_Estado ON PEDIDO (Estado);
 CREATE NONCLUSTERED INDEX idx_Detalle_IdProducto ON DETALLE_PEDIDO (Id_Producto);
 CREATE NONCLUSTERED INDEX idx_Pedido_FechaCreacion ON PEDIDO (Fecha_Hora_Creacion);
 GO
-
+-- ====================================================
+-- AVANCE 03: USUARIOS Y PERMISOS
+-- ====================================================
+CREATE USER User_Gerente WITH PASSWORD = 'PasswordSeguro2026*';
+CREATE USER User_Cajero WITH PASSWORD = 'PasswordSeguro2026*';
+CREATE USER User_Atencion WITH PASSWORD = 'PasswordSeguro2026*';
+CREATE USER User_Analista WITH PASSWORD = 'PasswordSeguro2026*';
+CREATE USER User_Auditor WITH PASSWORD = 'PasswordSeguro2026*';
+GO
+GRANT EXECUTE ON OBJECT::sp_InsertarProducto TO User_Gerente;
+GRANT SELECT ON OBJECT::vw_ReporteVentasPorCliente TO User_Gerente;
+GRANT EXECUTE ON OBJECT::sp_ActualizarProducto TO User_Cajero;
+GRANT SELECT ON OBJECT::vw_ReporteHistorialDetallado TO User_Cajero;
+GRANT SELECT ON OBJECT::CLIENTE TO User_Atencion;
+GRANT SELECT ON OBJECT::vw_ReporteProductosMasVendidos TO User_Atencion;
+GRANT SELECT ON OBJECT::vw_ReporteIngresosPorEstado TO User_Analista;
+GRANT SELECT ON OBJECT::vw_ReporteVentasPorCliente TO User_Analista;
+GRANT SELECT ON OBJECT::AUDITORIA_PRECIOS TO User_Auditor;
+GRANT SELECT ON OBJECT::vw_ReporteIngresosPorEstado TO User_Auditor;
+GO
