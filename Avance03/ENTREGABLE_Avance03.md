@@ -36,17 +36,24 @@
 ## 📱 4. Manual de Usuario
 
 ## 1. Interfaz Principal
+
 Al ejecutar el sistema, el operador tiene acceso a un formulario centralizado para la gestión del catálogo de productos.
+
 <img width="493" height="432" alt="image" src="https://github.com/user-attachments/assets/6df1df90-7684-4334-9fd9-6e051df4f83d" />
 
 ## 2. Registro de Nuevos Productos
+
 Para añadir un ítem al menú, el usuario debe completar los campos obligatorios. El sistema se comunica con `sp_InsertarProducto` para guardar el registro.
+
 <img width="375" height="183" alt="image" src="https://github.com/user-attachments/assets/e3c4e301-8540-4037-b7a3-1027b843235a" />
+
 * **Actualización:** El operador puede modificar precios o nombres ingresando el ID del producto y los nuevos datos, ejecutando `sp_ActualizarProducto`.
 * **Eliminación:** Solo se requiere el ID del producto para retirarlo del sistema mediante `sp_EliminarProducto`.
 
 ## 3. Validaciones y Seguridad del Sistema
+
 La base de datos protege la integridad del negocio bloqueando errores de capa de usuario. Si un operador intenta ingresar un producto con precio cero o negativo, el sistema detiene la transacción y muestra una alerta visual.
+
 <img width="492" height="433" alt="image" src="https://github.com/user-attachments/assets/3308283a-62b3-46a8-8004-14de3afb287f" />
 <img width="510" height="208" alt="image" src="https://github.com/user-attachments/assets/2f96f32c-0c54-454c-960a-956513847433" />
 
