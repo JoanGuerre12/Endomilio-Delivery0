@@ -155,50 +155,231 @@ INSERT INTO CALIFICACION VALUES
 
 -- AVANCE #03
 
-CREATE PROCEDURE sp_InsertarProducto @Id_Producto CHAR(5), @Nombre_Producto VARCHAR(50), @Precio DECIMAL(6,2), @Estado_Activo CHAR(1) AS
-BEGIN BEGIN TRY BEGIN TRANSACTION; IF @Precio <= 0 BEGIN THROW 50001, 'Error: El precio del producto debe ser mayor a 0.', 1; END
-INSERT INTO PRODUCTO (Id_Producto, Nombre_Producto, Precio, Estado_Activo) VALUES (@Id_Producto, @Nombre_Producto, @Precio, @Estado_Activo);
-COMMIT TRANSACTION; END TRY BEGIN CATCH IF @@TRANCOUNT > 0 ROLLBACK TRANSACTION; THROW; END CATCH END;
+-- ====================================================
+-- Stored Procedure
+-- ====================================================
+-- 1. SP PARA INSERTAR PRODUCTO
+-- ====================================================
+CREATE PROCEDURE sp_InsertarProducto
+    @Id_Producto CHAR(5),
+    @Nombre_Producto VARCHAR(50),
+    @Precio DECIMAL(6,2),
+    @Estado_Activo CHAR(1)
+AS
+BEGIN
+    BEGIN TRY
+        BEGIN TRANSACTION; 
+        
+        IF @Precio <= 0
+        BEGIN
+            THROW 50001, 'Error: El precio del producto debe ser mayor a 0.', 1;
+        END
+
+        INSERT INTO PRODUCTO (Id_Producto, Nombre_Producto, Precio, Estado_Activo)
+        VALUES (@Id_Producto, @Nombre_Producto, @Precio, @Estado_Activo);
+
+        COMMIT TRANSACTION; 
+    END TRY
+    BEGIN CATCH
+       
+        IF @@TRANCOUNT > 0
+            ROLLBACK TRANSACTION; 
+        THROW;
+    END CATCH
+END;
 GO
 
-CREATE PROCEDURE sp_ActualizarProducto @Id_Producto CHAR(5), @Nombre_Producto VARCHAR(50), @Precio DECIMAL(6,2), @Estado_Activo CHAR(1) AS
-BEGIN BEGIN TRY BEGIN TRANSACTION; IF @Precio <= 0 BEGIN THROW 50002, 'Error: El precio debe ser mayor a 0.', 1; END
-UPDATE PRODUCTO SET Nombre_Producto = @Nombre_Producto, Precio = @Precio, Estado_Activo = @Estado_Activo WHERE Id_Producto = @Id_Producto;
-COMMIT TRANSACTION; END TRY BEGIN CATCH IF @@TRANCOUNT > 0 ROLLBACK TRANSACTION; THROW; END CATCH END;
+-- ====================================================
+-- 2. SP PARA ACTUALIZAR PRODUCTO
+-- ====================================================
+CREATE PROCEDURE sp_ActualizarProducto
+    @Id_Producto CHAR(5),
+    @Nombre_Producto VARCHAR(50),
+    @Precio DECIMAL(6,2),
+    @Estado_Activo CHAR(1)
+AS
+BEGIN
+    BEGIN TRY
+        BEGIN TRANSACTION;
+        
+        IF @Precio <= 0
+        BEGIN
+            THROW 50002, 'Error: El precio actualizado debe ser mayor a 0.', 1;
+        END
+
+        UPDATE PRODUCTO 
+        SET Nombre_Producto = @Nombre_Producto, 
+            Precio = @Precio, 
+            Estado_Activo = @Estado_Activo
+        WHERE Id_Producto = @Id_Producto;
+
+        COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        IF @@TRANCOUNT > 0
+            ROLLBACK TRANSACTION;
+        THROW;
+    END CATCH
+END;
 GO
 
-CREATE PROCEDURE sp_EliminarProducto @Id_Producto CHAR(5) AS
-BEGIN BEGIN TRY BEGIN TRANSACTION; IF NOT EXISTS (SELECT 1 FROM PRODUCTO WHERE Id_Producto = @Id_Producto) BEGIN THROW 50003, 'Error: No existe.', 1; END
-DELETE FROM PRODUCTO WHERE Id_Producto = @Id_Producto; COMMIT TRANSACTION; END TRY BEGIN CATCH IF @@TRANCOUNT > 0 ROLLBACK TRANSACTION; THROW; END CATCH END;
+-- ====================================================
+-- 3. SP PARA ELIMINAR PRODUCTO
+-- ====================================================
+CREATE PROCEDURE sp_EliminarProducto
+    @Id_Producto CHAR(5)
+AS
+BEGIN
+    BEGIN TRY
+        BEGIN TRANSACTION;
+
+        
+        IF NOT EXISTS (SELECT 1 FROM PRODUCTO WHERE Id_Producto = @Id_Producto)
+        BEGIN
+            THROW 50003, 'Error: El producto que intenta eliminar no existe.', 1;
+        END
+
+        DELETE FROM PRODUCTO WHERE Id_Producto = @Id_Producto;
+
+        COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        IF @@TRANCOUNT > 0
+            ROLLBACK TRANSACTION;
+        THROW;
+    END CATCH
+END;
 GO
-
-
+    
+-- ====================================================
 -- Triggers
-
-CREATE TABLE AUDITORIA_PRECIOS (Id_Auditoria INT IDENTITY(1,1) PRIMARY KEY, Id_Producto CHAR(5), Precio_Viejo DECIMAL(6,2), Precio_Nuevo DECIMAL(6,2), Fecha_Cambio DATETIME DEFAULT GETDATE());
+-- ====================================================
+-- ====================================================
+-- PREPARACIÓN: Tabla para el Trigger 2
+-- ====================================================
+-- Creamos una tabla rápida para guardar el historial de cambios
+CREATE TABLE AUDITORIA_PRECIOS (
+    Id_Auditoria INT IDENTITY(1,1) PRIMARY KEY,
+    Id_Producto CHAR(5),
+    Precio_Viejo DECIMAL(6,2),
+    Precio_Nuevo DECIMAL(6,2),
+    Fecha_Cambio DATETIME DEFAULT GETDATE()
+);
 GO
 
-CREATE TRIGGER trg_ValidarPedidoEntregado ON DETALLE_PEDIDO INSTEAD OF INSERT AS
-BEGIN IF EXISTS (SELECT 1 FROM inserted i JOIN PEDIDO p ON i.Id_Pedido = p.Id_Pedido WHERE p.Estado = 'Entregado') BEGIN THROW 50004, 'Error: Pedido ya entregado.', 1; END
-ELSE BEGIN INSERT INTO DETALLE_PEDIDO (Id_Pedido, Id_Producto, Cantidad, Subtotal) SELECT Id_Pedido, Id_Producto, Cantidad, Subtotal FROM inserted; END END;
+-- ====================================================
+-- TRIGGER 1: Regla de Negocio (Bloquear alteraciones)
+-- ====================================================
+CREATE TRIGGER trg_ValidarPedidoEntregado
+ON DETALLE_PEDIDO
+INSTEAD OF INSERT
+AS
+BEGIN
+    IF EXISTS (
+        SELECT 1
+        FROM inserted i
+        JOIN PEDIDO p ON i.Id_Pedido = p.Id_Pedido
+        WHERE p.Estado = 'Entregado'
+    )
+    BEGIN
+        THROW 50004, 'Error Trigger: No se pueden agregar más productos a un pedido que ya fue Entregado.', 1;
+    END
+    ELSE
+    BEGIN
+        -- Si el pedido no está entregado, permite guardar el detalle normal
+        INSERT INTO DETALLE_PEDIDO (Id_Pedido, Id_Producto, Cantidad, Subtotal)
+        SELECT Id_Pedido, Id_Producto, Cantidad, Subtotal FROM inserted;
+    END
+END;
 GO
 
-CREATE TRIGGER trg_AuditoriaPrecio ON PRODUCTO AFTER UPDATE AS
-BEGIN IF UPDATE(Precio) BEGIN INSERT INTO AUDITORIA_PRECIOS (Id_Producto, Precio_Viejo, Precio_Nuevo)
-SELECT i.Id_Producto, d.Precio, i.Precio FROM inserted i JOIN deleted d ON i.Id_Producto = d.Id_Producto WHERE i.Precio <> d.Precio; END END;
+-- ====================================================
+-- TRIGGER 2: Auditoría (Historial automático)
+-- ====================================================
+CREATE TRIGGER trg_AuditoriaPrecio
+ON PRODUCTO
+AFTER UPDATE
+AS
+BEGIN
+    -- Solo se activa si la columna Precio fue modificada
+    IF UPDATE(Precio)
+    BEGIN
+        INSERT INTO AUDITORIA_PRECIOS (Id_Producto, Precio_Viejo, Precio_Nuevo)
+        SELECT 
+            i.Id_Producto,
+            d.Precio AS Precio_Viejo,
+            i.Precio AS Precio_Nuevo
+        FROM inserted i
+        JOIN deleted d ON i.Id_Producto = d.Id_Producto
+        WHERE i.Precio <> d.Precio; -- Solo si el precio realmente cambió
+    END
+END;
 GO
 
--- AVANCE 03: REPORTES (VISTAS)
 
-CREATE VIEW vw_ReporteVentasPorCliente AS SELECT c.Id_Cliente, c.Nombre AS Cliente, COUNT(DISTINCT p.Id_Pedido) AS Total_Pedidos, SUM(dp.Cantidad) AS Articulos_Comprados, SUM(dp.Subtotal) AS Dinero_Gastado FROM CLIENTE c JOIN PEDIDO p ON c.Id_Cliente = p.Id_Cliente JOIN DETALLE_PEDIDO dp ON p.Id_Pedido = dp.Id_Pedido GROUP BY c.Id_Cliente, c.Nombre;
-GO
-CREATE VIEW vw_ReporteProductosMasVendidos AS SELECT pr.Id_Producto, pr.Nombre_Producto, COUNT(DISTINCT p.Id_Pedido) AS Apariciones, SUM(dp.Cantidad) AS Unidades_Vendidas, SUM(dp.Subtotal) AS Ingresos FROM PRODUCTO pr JOIN DETALLE_PEDIDO dp ON pr.Id_Producto = dp.Id_Producto JOIN PEDIDO p ON dp.Id_Pedido = p.Id_Pedido GROUP BY pr.Id_Producto, pr.Nombre_Producto;
-GO
-CREATE VIEW vw_ReporteHistorialDetallado AS SELECT p.Id_Pedido, p.Fecha_Hora_Creacion, c.Nombre AS Cliente, pr.Nombre_Producto AS Item, dp.Cantidad, dp.Subtotal, p.Estado FROM PEDIDO p JOIN CLIENTE c ON p.Id_Cliente = c.Id_Cliente JOIN DETALLE_PEDIDO dp ON p.Id_Pedido = dp.Id_Pedido JOIN PRODUCTO pr ON dp.Id_Producto = pr.Id_Producto;
-GO
-CREATE VIEW vw_ReporteIngresosPorEstado AS SELECT p.Estado, COUNT(DISTINCT p.Id_Pedido) AS Cantidad_Pedidos, COUNT(DISTINCT c.Id_Cliente) AS Clientes_Atendidos, SUM(dp.Cantidad) AS Productos_Movidos, SUM(dp.Subtotal) AS Dinero_Recaudado FROM PEDIDO p JOIN CLIENTE c ON p.Id_Cliente = c.Id_Cliente JOIN DETALLE_PEDIDO dp ON p.Id_Pedido = dp.Id_Pedido GROUP BY p.Estado;
+-- ====================================================
+-- REPORTE 1: Resumen de Ventas por Cliente
+-- Tablas unidas (3): CLIENTE, PEDIDO, DETALLE_PEDIDO
+-- ====================================================
+CREATE VIEW vw_ReporteVentasPorCliente AS
+SELECT 
+    c.Id_Cliente,
+    c.Nombre AS Cliente,
+    COUNT(DISTINCT p.Id_Pedido) AS Total_Pedidos_Realizados,
+    SUM(dp.Cantidad) AS Total_Articulos_Comprados,
+    SUM(dp.Subtotal) AS Total_Dolares_Gastados
+FROM CLIENTE c
+JOIN PEDIDO p ON c.Id_Cliente = p.Id_Cliente
+JOIN DETALLE_PEDIDO dp ON p.Id_Pedido = dp.Id_Pedido
+GROUP BY c.Id_Cliente, c.Nombre;
 GO
 
+-- ====================================================
+-- REPORTE 2: Rendimiento de los Productos (Más vendidos)
+CREATE VIEW vw_ReporteProductosMasVendidos AS
+SELECT 
+    pr.Id_Producto,
+    pr.Nombre_Producto,
+    COUNT(DISTINCT p.Id_Pedido) AS Apariciones_En_Pedidos,
+    SUM(dp.Cantidad) AS Total_Unidades_Vendidas,
+    SUM(dp.Subtotal) AS Ingresos_Generados
+FROM PRODUCTO pr
+JOIN DETALLE_PEDIDO dp ON pr.Id_Producto = dp.Id_Producto
+JOIN PEDIDO p ON dp.Id_Pedido = p.Id_Pedido
+GROUP BY pr.Id_Producto, pr.Nombre_Producto;
+GO
+
+-- ====================================================
+-- REPORTE 3: Historial Detallado (Sábana de datos
+CREATE VIEW vw_ReporteHistorialDetallado AS
+SELECT 
+    p.Id_Pedido,
+    p.Fecha_Hora_Creacion,
+    c.Nombre AS Nombre_Cliente,
+    pr.Nombre_Producto AS Item_Comprado,
+    dp.Cantidad,
+    dp.Subtotal,
+    p.Estado
+FROM PEDIDO p
+JOIN CLIENTE c ON p.Id_Cliente = c.Id_Cliente
+JOIN DETALLE_PEDIDO dp ON p.Id_Pedido = dp.Id_Pedido
+JOIN PRODUCTO pr ON dp.Id_Producto = pr.Id_Producto;
+GO
+
+-- REPORTE 4: Ingresos Agrupados por Estado del Pedido
+
+CREATE VIEW vw_ReporteIngresosPorEstado AS
+SELECT 
+    p.Estado AS Estado_Del_Pedido,
+    COUNT(DISTINCT p.Id_Pedido) AS Cantidad_Total_Pedidos,
+    COUNT(DISTINCT c.Id_Cliente) AS Clientes_Unicos_Atendidos,
+    SUM(dp.Cantidad) AS Volumen_Productos_Movidos,
+    SUM(dp.Subtotal) AS Total_Dinero
+FROM PEDIDO p
+JOIN CLIENTE c ON p.Id_Cliente = c.Id_Cliente
+JOIN DETALLE_PEDIDO dp ON p.Id_Pedido = dp.Id_Pedido
+GROUP BY p.Estado;
+GO
 
 -- AVANCE 03: ÍNDICES
 
