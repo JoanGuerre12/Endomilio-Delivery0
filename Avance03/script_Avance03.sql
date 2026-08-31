@@ -6,6 +6,23 @@ CREATE TABLE CLIENTE (
     Direccion_Entrega VARCHAR(100) NOT NULL
 );
 
+CREATE TABLE REPARTIDOR (
+    Id_Repartidor CHAR(5) PRIMARY KEY,
+    Nombre_Repartidor VARCHAR(50) NOT NULL,
+    Medio_Transporte VARCHAR(20) NOT NULL,
+    Numero_Placa VARCHAR(15)
+);
+
+CREATE TABLE CALIFICACION (
+    Id_Calificacion CHAR(10) PRIMARY KEY,
+    Id_Pedido CHAR(10) NOT NULL,
+    Id_Cliente CHAR(10) NOT NULL,
+    Puntuacion INT NOT NULL,
+    Comentario VARCHAR(100) NULL,
+    FOREIGN KEY (Id_Pedido) REFERENCES PEDIDO(Id_Pedido),
+    FOREIGN KEY (Id_Cliente) REFERENCES CLIENTE(Id_Cliente)
+);
+
 CREATE TABLE PRODUCTO (
     Id_Producto CHAR(5) PRIMARY KEY,
     Nombre_Producto VARCHAR(50) NOT NULL,
@@ -32,7 +49,15 @@ CREATE TABLE DETALLE_PEDIDO (
     FOREIGN KEY (Id_Producto) REFERENCES PRODUCTO(Id_Producto)
 );
 
-
+CREATE TABLE PAGO (
+    Id_Pago CHAR(10) PRIMARY KEY,
+    Id_Pedido CHAR(10) NOT NULL,
+    Id_Cliente CHAR(10) NOT NULL,
+    Monto DECIMAL(6,2) NOT NULL,
+    Metodo_Pago VARCHAR(20) NOT NULL,
+    Comprobante VARCHAR(50) NOT NULL,
+    FOREIGN KEY (Id_Pedido) REFERENCES PEDIDO(Id_Pedido),
+    FOREIGN KEY (Id_Cliente) REFERENCES CLIENTE(Id_Cliente)
 -- 2. INSERCIÓN DE DATOS INICIALES
 
 
