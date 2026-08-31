@@ -397,15 +397,28 @@ CREATE USER User_Cajero WITH PASSWORD = 'PasswordSeguro2026*';
 CREATE USER User_Atencion WITH PASSWORD = 'PasswordSeguro2026*';
 CREATE USER User_Analista WITH PASSWORD = 'PasswordSeguro2026*';
 CREATE USER User_Auditor WITH PASSWORD = 'PasswordSeguro2026*';
-GO
+
+-- ====================================================
+-- ASIGNACIÓN DE PERMISOS (Mínimo 2 por usuario)
+-- ====================================================
+
+-- 1. User_Gerente (Cumple requisito de permiso a SP)
 GRANT EXECUTE ON OBJECT::sp_InsertarProducto TO User_Gerente;
 GRANT SELECT ON OBJECT::vw_ReporteVentasPorCliente TO User_Gerente;
+
+-- 2. User_Cajero (Cumple requisito de permiso a SP y Vista)
 GRANT EXECUTE ON OBJECT::sp_ActualizarProducto TO User_Cajero;
 GRANT SELECT ON OBJECT::vw_ReporteHistorialDetallado TO User_Cajero;
+
+-- 3. User_Atencion
 GRANT SELECT ON OBJECT::CLIENTE TO User_Atencion;
 GRANT SELECT ON OBJECT::vw_ReporteProductosMasVendidos TO User_Atencion;
+
+-- 4. User_Analista (Cumple requisito de múltiples permisos a vistas)
 GRANT SELECT ON OBJECT::vw_ReporteIngresosPorEstado TO User_Analista;
 GRANT SELECT ON OBJECT::vw_ReporteVentasPorCliente TO User_Analista;
+
+-- 5. User_Auditor
 GRANT SELECT ON OBJECT::AUDITORIA_PRECIOS TO User_Auditor;
 GRANT SELECT ON OBJECT::vw_ReporteIngresosPorEstado TO User_Auditor;
 GO
