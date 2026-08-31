@@ -257,7 +257,7 @@ GO
 -- ====================================================
 -- PREPARACIÓN: Tabla para el Trigger 2
 -- ====================================================
--- Creamos una tabla rápida para guardar el historial de cambios
+
 CREATE TABLE AUDITORIA_PRECIOS (
     Id_Auditoria INT IDENTITY(1,1) PRIMARY KEY,
     Id_Producto CHAR(5),
@@ -286,7 +286,7 @@ BEGIN
     END
     ELSE
     BEGIN
-        -- Si el pedido no está entregado, permite guardar el detalle normal
+        -
         INSERT INTO DETALLE_PEDIDO (Id_Pedido, Id_Producto, Cantidad, Subtotal)
         SELECT Id_Pedido, Id_Producto, Cantidad, Subtotal FROM inserted;
     END
@@ -301,7 +301,7 @@ ON PRODUCTO
 AFTER UPDATE
 AS
 BEGIN
-    -- Solo se activa si la columna Precio fue modificada
+    
     IF UPDATE(Precio)
     BEGIN
         INSERT INTO AUDITORIA_PRECIOS (Id_Producto, Precio_Viejo, Precio_Nuevo)
@@ -311,7 +311,7 @@ BEGIN
             i.Precio AS Precio_Nuevo
         FROM inserted i
         JOIN deleted d ON i.Id_Producto = d.Id_Producto
-        WHERE i.Precio <> d.Precio; -- Solo si el precio realmente cambió
+        WHERE i.Precio <> d.Precio; 
     END
 END;
 GO
