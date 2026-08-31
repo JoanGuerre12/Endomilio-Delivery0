@@ -66,7 +66,7 @@ def mostrar_pantalla_productos():
 
     tk.Label(ventana_prod, text="Catálogo de Productos Activos", font=("Arial", 14, "bold")).pack(pady=10)
 
-    query = "SELECT Id_Producto, Nombre_Producto, Precio, Estado_Activo FROM PRODUCTO"
+    query = "SELECT Id_Producto, Nombre_Producto, Precio, Estado_Activo FROM PRODUCTO WHERE Estado_Activo = 'S'"
     columnas, filas = ejecutar_consulta(query)
 
     if columnas:
