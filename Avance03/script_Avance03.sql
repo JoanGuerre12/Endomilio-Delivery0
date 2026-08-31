@@ -62,26 +62,96 @@ CREATE TABLE PAGO (
 
 
 -- Insertar Clientes
-INSERT INTO CLIENTE (Id_Cliente, Nombre, Telefono, Direccion_Entrega) VALUES 
-('0912345678', 'Carlos Zambrano', '0991112233', 'Sauces 8, Guayaquil'),
-('0987654321', 'Andrea Gomez', '0982223344', 'Samanes 2, Guayaquil');
+-- Inserción de Registros: Tabla CLIENTE
+INSERT INTO CLIENTE VALUES 
+('0912345671', 'Carlos Mendoza', '0991234561', 'Urdesa Central, Calle 1'),
+('0912345672', 'Ana Torres', '0991234562', 'Ceibos Norte, Mz 4'),
+('0912345673', 'Luis Silva', '0991234563', 'Alborada 12ava Etapa'),
+('0912345674', 'Maria Gomez', '0991234564', 'Garzota 2, Mz 15'),
+('0912345675', 'Jorge Ruiz', '0991234565', 'Samanes 4, Villa 10'),
+('0912345676', 'Elena Castro', '0991234566', 'Vía a la Costa, Km 10'),
+('0912345677', 'Pedro Vera', '0991234567', 'Sauces 8, Mz 20'),
+('0912345678', 'Lucia Ortiz', '0991234568', 'Puerto Santa Ana, Edificio 3'),
+('0912345679', 'Andres Lopez', '0991234569', 'Sur, Barrio del Seguro'),
+('0912345670', 'Diana Mora', '0991234560', 'Mucho Lote 2, Etapa 1');
 
--- Insertar Productos
-INSERT INTO PRODUCTO (Id_Producto, Nombre_Producto, Precio, Estado_Activo) VALUES 
-('PR001', 'Combo Hamburguesa', 5.50, '1'),
-('PR002', 'Alitas BBQ (6 uds)', 6.00, '1'),
-('PR003', 'Gaseosa 1L', 1.50, '1');
+-- Inserción de Registros: Tabla REPARTIDOR
+INSERT INTO REPARTIDOR VALUES 
+('R0001', 'Juan Perez', 'Moto', 'GBA-1234'),
+('R0002', 'Miguel Santos', 'Moto', 'GBC-5678'),
+('R0003', 'Jose Reyes', 'Bicicleta', NULL),
+('R0004', 'David Macias', 'Moto', 'GBE-9012'),
+('R0005', 'Kevin Leon', 'Auto', 'GSY-3456'),
+('R0006', 'Bryan Cruz', 'Moto', 'GBZ-7890'),
+('R0007', 'Victor Peña', 'Bicicleta', NULL),
+('R0008', 'Alex Velez', 'Moto', 'GBL-1122'),
+('R0009', 'Daniel Franco', 'Auto', 'GSP-3344'),
+('R0010', 'Oscar Solis', 'Moto', 'GBM-5566');
 
--- Insertar Pedidos
-INSERT INTO PEDIDO (Id_Pedido, Id_Cliente, Fecha_Hora_Creacion, Monto_Total, Estado) VALUES 
-('PD-0001', '0912345678', '2026-08-04 19:30:00', 7.00, 'Entregado'),
-('PD-0002', '0987654321', '2026-08-04 20:00:00', 6.00, 'En camino');
+-- Inserción de Registros: Tabla PRODUCTO
+INSERT INTO PRODUCTO VALUES 
+('P0001', 'Combo 10 Alitas BBQ', 12.50, 'S'),
+('P0002', 'Combo 15 Alitas Buffalo', 16.00, 'S'),
+('P0003', 'Hamburguesa Clásica', 6.50, 'S'),
+('P0004', 'Hamburguesa Doble', 8.50, 'S'),
+('P0005', 'Papas Fritas Medianas', 2.50, 'S'),
+('P0006', 'Papas Fritas Grandes', 3.50, 'S'),
+('P0007', 'Gaseosa 1 Litro', 2.00, 'S'),
+('P0008', 'Limonada Frapeada', 3.00, 'S'),
+('P0009', 'Combo Familiar (30 Alitas)', 28.00, 'S'),
+('P0010', 'Helado de Vainilla', 2.50, 'N');
 
--- Insertar Detalles del Pedido (Relación Muchos a Muchos)
-INSERT INTO DETALLE_PEDIDO (Id_Pedido, Id_Producto, Cantidad, Subtotal) VALUES 
-('PD-0001', 'PR001', 1, 5.50),
-('PD-0001', 'PR003', 1, 1.50),
-('PD-0002', 'PR002', 1, 6.00);
+-- Inserción de Registros: Tabla PEDIDO
+INSERT INTO PEDIDO VALUES 
+('PED-000001', '0912345671', 'R0001', '2026-07-15 19:00:00', '2026-07-15 19:45:00', 12.50, 'Entregado', 'Urdesa Central, Calle 1', NULL, NULL, NULL),
+('PED-000002', '0912345672', 'R0002', '2026-07-15 19:10:00', '2026-07-15 19:50:00', 16.00, 'Entregado', 'Ceibos Norte, Mz 4', NULL, NULL, NULL),
+('PED-000003', '0912345673', NULL, '2026-07-15 20:00:00', NULL, 8.50, 'Cancelado', 'Alborada 12ava Etapa', 'Cliente no respondio', NULL, NULL),
+('PED-000004', '0912345674', 'R0004', '2026-07-16 18:30:00', '2026-07-16 19:10:00', 30.50, 'Entregado', 'Garzota 2, Mz 15', NULL, 'DESC-2.5', 2.50),
+('PED-000005', '0912345675', 'R0005', '2026-07-16 19:00:00', '2026-07-16 19:30:00', 6.50, 'Entregado', 'Samanes 4, Villa 10', NULL, NULL, NULL),
+('PED-000006', '0912345676', 'R0006', '2026-07-17 20:15:00', '2026-07-17 21:00:00', 14.50, 'Entregado', 'Vía a la Costa, Km 10', NULL, NULL, NULL),
+('PED-000007', '0912345677', 'R0007', '2026-07-18 12:00:00', '2026-07-18 12:40:00', 9.00, 'Entregado', 'Sauces 8, Mz 20', NULL, NULL, NULL),
+('PED-000008', '0912345678', NULL, '2026-07-18 19:00:00', NULL, 28.00, 'Pendiente', 'Puerto Santa Ana', NULL, NULL, NULL),
+('PED-000009', '0912345679', 'R0009', '2026-07-18 19:05:00', NULL, 12.50, 'En camino', 'Sur, Barrio del Seguro', NULL, NULL, NULL),
+('PED-000010', '0912345670', 'R0010', '2026-07-18 19:10:00', '2026-07-18 19:55:00', 21.00, 'Entregado', 'Mucho Lote 2, Etapa 1', NULL, 'PROMO-5', 5.00);
+
+-- Inserción de Registros: Tabla DETALLE_PEDIDO
+INSERT INTO DETALLE_PEDIDO VALUES 
+('PED-000001', 'P0001', 1, 12.50),
+('PED-000002', 'P0002', 1, 16.00),
+('PED-000003', 'P0004', 1, 8.50),
+('PED-000004', 'P0009', 1, 28.00),
+('PED-000004', 'P0005', 1, 2.50),
+('PED-000005', 'P0003', 1, 6.50),
+('PED-000006', 'P0001', 1, 12.50),
+('PED-000006', 'P0007', 1, 2.00),
+('PED-000007', 'P0003', 1, 6.50),
+('PED-000007', 'P0005', 1, 2.50);
+
+-- Inserción de Registros: Tabla PAGO
+INSERT INTO PAGO VALUES 
+('PAG-000001', 'PED-000001', '0912345671', 12.50, 'Transferencia', 'REF-998877'),
+('PAG-000002', 'PED-000002', '0912345672', 16.00, 'Tarjeta', 'VOU-123456'),
+('PAG-000003', 'PED-000004', '0912345674', 28.00, 'Efectivo', 'REC-001'),
+('PAG-000004', 'PED-000005', '0912345675', 6.50, 'Transferencia', 'REF-998878'),
+('PAG-000005', 'PED-000006', '0912345676', 14.50, 'Tarjeta', 'VOU-123457'),
+('PAG-000006', 'PED-000007', '0912345677', 9.00, 'Efectivo', 'REC-002'),
+('PAG-000007', 'PED-000008', '0912345678', 28.00, 'Transferencia', 'REF-998879'),
+('PAG-000008', 'PED-000009', '0912345679', 12.50, 'Tarjeta', 'VOU-123458'),
+('PAG-000009', 'PED-000010', '0912345670', 16.00, 'Tarjeta', 'VOU-123459'),
+('PAG-000010', 'PED-000004', '0912345674', 2.50, 'Efectivo', 'REC-003');
+
+-- Inserción de Registros: Tabla CALIFICACION
+INSERT INTO CALIFICACION VALUES 
+('CAL-000001', 'PED-000001', '0912345671', 5, 'Excelente servicio y rapidos'),
+('CAL-000002', 'PED-000002', '0912345672', 4, 'Todo bien pero falto servilletas'),
+('CAL-000003', 'PED-000004', '0912345674', 5, 'Las mejores alitas'),
+('CAL-000004', 'PED-000005', '0912345675', 5, 'Buena hamburguesa'),
+('CAL-000005', 'PED-000006', '0912345676', 3, 'Llego un poco frio'),
+('CAL-000006', 'PED-000007', '0912345677', 5, 'Muy amables'),
+('CAL-000007', 'PED-000010', '0912345670', 4, 'Buena promo'),
+('CAL-000008', 'PED-000001', '0912345671', 5, 'Volvere a pedir'),
+('CAL-000009', 'PED-000002', '0912345672', 5, 'Recomendado'),
+('CAL-000010', 'PED-000004', '0912345674', 5, '10/10');
 
 -- AVANCE #03
 
