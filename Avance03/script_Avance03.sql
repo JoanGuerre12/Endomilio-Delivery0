@@ -410,7 +410,7 @@ GRANT SELECT ON OBJECT::vw_ReporteVentasPorCliente TO User_Gerente;
 -- 2. User_Cajero (Cumple requisito de permiso a SP y Vista)
 GRANT EXECUTE ON OBJECT::sp_ActualizarProducto TO User_Cajero;
 GRANT SELECT ON OBJECT::vw_ReporteHistorialDetallado TO User_Cajero;
-
+GRANT SELECT ON OBJECT::sp_EliminarProducto TO User_Gerente;
 -- 3. User_Atencion
 GRANT SELECT ON OBJECT::CLIENTE TO User_Atencion;
 GRANT SELECT ON OBJECT::vw_ReporteProductosMasVendidos TO User_Atencion;
