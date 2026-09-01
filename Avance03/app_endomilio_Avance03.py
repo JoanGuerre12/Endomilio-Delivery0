@@ -3,7 +3,7 @@ from tkinter import ttk, messagebox
 import pyodbc
 
 # ==========================================
-# 1. CONFIGURACIÓN DE LA CONEXIÓN A AZURE
+# 1. CONFIGURACIÓN DE CONEXIÓN
 # ==========================================
 connection_string = (
     'Driver={ODBC Driver 18 for SQL Server};'
@@ -16,8 +16,8 @@ connection_string = (
     'Connection Timeout=30;'
 )
 
+
 def ejecutar_consulta(query):
-    """Conecta a Azure, ejecuta la consulta y devuelve los resultados."""
     try:
         conn = pyodbc.connect(connection_string, timeout=10)
         cursor = conn.cursor()
@@ -30,21 +30,21 @@ def ejecutar_consulta(query):
         messagebox.showerror("Error de Conexión", f"No se pudo conectar a Azure:\n{e}")
         return None, None
 
+
 def ejecutar_accion(query, parametros):
-    """Función para hacer INSERT, UPDATE y DELETE (Guardar cambios en Azure)"""
     try:
         conexion = pyodbc.connect(connection_string)
         cursor = conexion.cursor()
         cursor.execute(query, parametros)
-        conexion.commit() 
+        conexion.commit()
         conexion.close()
         return True
     except Exception as e:
-        messagebox.showerror("Error de Base de Datos", f"Ocurrió un error:\n{e}")
+        messagebox.showerror("Error BD", f"Ocurrió un error:\n{e}")
         return False
 
+
 def crear_tabla(ventana, columnas, filas):
-    """Función auxiliar para dibujar las tablas en la interfaz"""
     tree = ttk.Treeview(ventana, columns=columnas, show='headings')
     for col in columnas:
         tree.heading(col, text=col)
@@ -52,33 +52,29 @@ def crear_tabla(ventana, columnas, filas):
 
     for fila in filas:
         tree.insert("", tk.END, values=list(fila))
-
     tree.pack(expand=True, fill='both', padx=20, pady=10)
 
+
 # ==========================================
-# 2. FUNCIONES DE LAS PANTALLAS DE LECTURA (R)
+# 2. MÓDULOS DE LECTURA (R)
 # ==========================================
 def mostrar_pantalla_productos():
-    """Pantalla 1: Muestra el catálogo de productos"""
     ventana_prod = tk.Toplevel(root)
     ventana_prod.title("Menú de Productos - Endomilio")
     ventana_prod.geometry("600x300")
-
     tk.Label(ventana_prod, text="Catálogo de Productos Activos", font=("Arial", 14, "bold")).pack(pady=10)
 
     query = "SELECT Id_Producto, Nombre_Producto, Precio, Estado_Activo FROM PRODUCTO WHERE Estado_Activo = 'S'"
     columnas, filas = ejecutar_consulta(query)
-
     if columnas:
         crear_tabla(ventana_prod, columnas, filas)
 
+
 def mostrar_pantalla_pedidos():
-    """Pantalla 2: Muestra el estado de los pedidos"""
     ventana_pedidos = tk.Toplevel(root)
     ventana_pedidos.title("Estado de Pedidos - Endomilio")
     ventana_pedidos.geometry("850x350")
-
-    tk.Label(ventana_pedidos, text="Registro Histórico de Pedidos", font=("Arial", 14, "bold")).pack(pady=10)
+    tk.Label(ventana_pedidos, text="Monitor General de Pedidos", font=("Arial", 14, "bold")).pack(pady=10)
 
     query = """
             SELECT P.Id_Pedido, C.Nombre AS Cliente, P.Fecha_Hora_Creacion, P.Monto_Total, P.Estado
@@ -95,21 +91,47 @@ def mostrar_pantalla_pedidos():
 
         for fila in filas:
             tree.insert("", tk.END, values=list(fila))
-
         tree.pack(expand=True, fill='both', padx=20, pady=10)
     else:
         tk.Label(ventana_pedidos, text="No se encontraron registros de pedidos.", fg="gray").pack(pady=20)
 
+
+def ver_detalle_pedido():
+    ventana_ver = tk.Toplevel(root)
+    ventana_ver.title("Ver Contenido del Pedido")
+    ventana_ver.geometry("600x400")
+
+    tk.Label(ventana_ver, text="Ingresa el ID del Pedido (Ej. PED-000009):", font=("Arial", 10, "bold")).pack(
+        pady=(15, 5))
+    txt_id_buscar = tk.Entry(ventana_ver)
+    txt_id_buscar.pack()
+
+    def buscar_detalle():
+        id_ped = txt_id_buscar.get()
+        query = f"""
+            SELECT DP.Id_Pedido, P.Nombre_Producto, DP.Cantidad, P.Precio, DP.Subtotal
+            FROM DETALLE_PEDIDO DP
+            JOIN PRODUCTO P ON DP.Id_Producto = P.Id_Producto
+            WHERE DP.Id_Pedido = '{id_ped}'
+        """
+        columnas, filas = ejecutar_consulta(query)
+        if filas:
+            crear_tabla(ventana_ver, columnas, filas)
+        else:
+            messagebox.showinfo("Información", "Este pedido está vacío o no existe.")
+
+    tk.Button(ventana_ver, text="Buscar Productos", command=buscar_detalle, bg="lightblue").pack(pady=15)
+
+
 # ==========================================
-# 3. FUNCIONES DE LAS PANTALLAS CRUD (C, U, D)
+# 3. MÓDULOS TRANSACCIONALES (C, U, D)
 # ==========================================
 def abrir_crud_productos():
-    """Ventana CRUD - Tabla Principal (PRODUCTO)"""
     ventana_prod = tk.Toplevel(root)
     ventana_prod.title("Gestión de Productos (CRUD)")
     ventana_prod.geometry("400x320")
 
-    tk.Label(ventana_prod, text="ID Producto (Ej. P0011):").pack(pady=(10,0))
+    tk.Label(ventana_prod, text="ID Producto (Ej. P0011):").pack(pady=(10, 0))
     txt_id = tk.Entry(ventana_prod)
     txt_id.pack()
 
@@ -126,26 +148,22 @@ def abrir_crud_productos():
     txt_estado.pack()
 
     def insertar():
-        # Llamamos al Stored Procedure
         query = "EXEC sp_InsertarProducto ?, ?, ?, ?"
         params = (txt_id.get(), txt_nombre.get(), float(txt_precio.get()), txt_estado.get())
         if ejecutar_accion(query, params):
-            messagebox.showinfo("Éxito", "Producto añadido correctamente (Vía SP).")
+            messagebox.showinfo("Éxito", "Producto añadido correctamente.")
 
     def actualizar():
-        # Llamamos al Stored Procedure
         query = "EXEC sp_ActualizarProducto ?, ?, ?, ?"
-       
         params = (txt_id.get(), txt_nombre.get(), float(txt_precio.get()), txt_estado.get())
         if ejecutar_accion(query, params):
-            messagebox.showinfo("Éxito", "Producto actualizado correctamente (Vía SP).")
+            messagebox.showinfo("Éxito", "Producto actualizado correctamente.")
 
     def eliminar():
-        # Llamamos al Stored Procedure
         query = "EXEC sp_EliminarProducto ?"
         params = (txt_id.get(),)
         if ejecutar_accion(query, params):
-            messagebox.showinfo("Éxito", "Producto eliminado correctamente (Vía SP).")
+            messagebox.showinfo("Éxito", "Producto eliminado correctamente.")
 
     frame_botones = tk.Frame(ventana_prod)
     frame_botones.pack(pady=15)
@@ -153,13 +171,13 @@ def abrir_crud_productos():
     tk.Button(frame_botones, text="Actualizar", command=actualizar, bg="lightblue").grid(row=0, column=1, padx=5)
     tk.Button(frame_botones, text="Eliminar", command=eliminar, bg="salmon").grid(row=0, column=2, padx=5)
 
+
 def abrir_crud_detalle():
-    """Ventana CRUD - Tabla Muchos a Muchos (DETALLE_PEDIDO)"""
     ventana_det = tk.Toplevel(root)
     ventana_det.title("Asignar Productos (Muchos a Muchos)")
     ventana_det.geometry("400x250")
 
-    tk.Label(ventana_det, text="ID del Pedido (Debe existir, ej. PED-000001):").pack(pady=(10,0))
+    tk.Label(ventana_det, text="ID del Pedido (Debe existir, ej. PED-000001):").pack(pady=(10, 0))
     txt_id_pedido = tk.Entry(ventana_det)
     txt_id_pedido.pack()
 
@@ -175,22 +193,42 @@ def abrir_crud_detalle():
         try:
             conexion = pyodbc.connect(connection_string)
             cursor = conexion.cursor()
-            cursor.execute("SELECT Precio FROM PRODUCTO WHERE Id_Producto = ?", (txt_id_producto_det.get(),))
-            resultado = cursor.fetchone()
 
-            if not resultado:
-                messagebox.showwarning("Error", "El Producto no existe.")
+            # Validación de Reglas de Negocio (Ciclo de Vida)
+            cursor.execute("SELECT Estado FROM PEDIDO WHERE Id_Pedido = ?", (txt_id_pedido.get(),))
+            resultado_estado = cursor.fetchone()
+
+            if not resultado_estado:
+                messagebox.showwarning("Error", "El Pedido no existe en el sistema.")
+                conexion.close()
                 return
 
-            precio_unitario = float(resultado[0])
+            estado_actual = resultado_estado[0]
+            if estado_actual == 'Entregado' or estado_actual == 'Cancelado':
+                messagebox.showerror("Operación Denegada",
+                                     f"No se pueden asignar productos. Este pedido ya se encuentra {estado_actual}.")
+                conexion.close()
+                return
+
+            # Obtención de precio y cálculo
+            cursor.execute("SELECT Precio FROM PRODUCTO WHERE Id_Producto = ?", (txt_id_producto_det.get(),))
+            resultado_precio = cursor.fetchone()
+
+            if not resultado_precio:
+                messagebox.showwarning("Error", "El Producto no existe en el catálogo.")
+                conexion.close()
+                return
+
+            precio_unitario = float(resultado_precio[0])
             cantidad = int(txt_cantidad.get())
             subtotal = precio_unitario * cantidad
 
+            # Inserción final
             query_insert = "INSERT INTO DETALLE_PEDIDO (Id_Pedido, Id_Producto, Cantidad, Subtotal) VALUES (?, ?, ?, ?)"
             cursor.execute(query_insert, (txt_id_pedido.get(), txt_id_producto_det.get(), cantidad, subtotal))
             conexion.commit()
             conexion.close()
-            messagebox.showinfo("Éxito", f"Detalle agregado. Subtotal calculado: ${subtotal:.2f}")
+            messagebox.showinfo("Éxito", f"Detalle agregado. Subtotal: ${subtotal:.2f}")
 
         except Exception as e:
             messagebox.showerror("Error", f"Fallo al agregar detalle:\n{e}")
@@ -203,63 +241,42 @@ def abrir_crud_detalle():
 
     frame_bot_det = tk.Frame(ventana_det)
     frame_bot_det.pack(pady=15)
-    tk.Button(frame_bot_det, text="Añadir al Pedido", command=insertar_detalle, bg="lightgreen").grid(row=0, column=0, padx=5)
-    tk.Button(frame_bot_det, text="Quitar del Pedido", command=eliminar_detalle, bg="salmon").grid(row=0, column=1, padx=5)
+    tk.Button(frame_bot_det, text="Añadir al Pedido", command=insertar_detalle, bg="lightgreen").grid(row=0, column=0,
+                                                                                                      padx=5)
+    tk.Button(frame_bot_det, text="Quitar del Pedido", command=eliminar_detalle, bg="salmon").grid(row=0, column=1,
+                                                                                                   padx=5)
 
-def ver_detalle_pedido():
-    """Pantalla para ver los productos asignados a un pedido específico"""
-    ventana_ver = tk.Toplevel(root)
-    ventana_ver.title("Ver Contenido del Pedido")
-    ventana_ver.geometry("600x400")
-
-    tk.Label(ventana_ver, text="Ingresa el ID del Pedido (Ej. PED-000009):", font=("Arial", 10, "bold")).pack(pady=(15,5))
-    txt_id_buscar = tk.Entry(ventana_ver)
-    txt_id_buscar.pack()
-
-    def buscar_detalle():
-        id_ped = txt_id_buscar.get()
-        # Hacemos un JOIN entre el Detalle y el Producto para ver el nombre real del ítem
-        query = f"""
-            SELECT DP.Id_Pedido, P.Nombre_Producto, DP.Cantidad, P.Precio, DP.Subtotal
-            FROM DETALLE_PEDIDO DP
-            JOIN PRODUCTO P ON DP.Id_Producto = P.Id_Producto
-            WHERE DP.Id_Pedido = '{id_ped}'
-        """
-        columnas, filas = ejecutar_consulta(query)
-
-        if filas:
-            crear_tabla(ventana_ver, columnas, filas)
-        else:
-            messagebox.showinfo("Información", "Este pedido está vacío o no existe.")
-
-    tk.Button(ventana_ver, text="Buscar Productos", command=buscar_detalle, bg="lightblue").pack(pady=15)
 
 # ==========================================
 # 4. VENTANA PRINCIPAL (MENÚ)
 # ==========================================
 root = tk.Tk()
 root.title("Sistema Gestor - Endomilio Delivery")
-root.geometry("400x380") 
+root.geometry("400x380")
 
 tk.Label(root, text="Panel de Administración", font=("Arial", 16, "bold")).pack(pady=(20, 5))
 tk.Label(root, text="Conectado a Azure SQL Database", fg="green").pack(pady=(0, 15))
 
-# --- Botones de Consulta (Lectura) ---
 btn_productos = tk.Button(root, text="📦 Ver Menú de Productos", command=mostrar_pantalla_productos, width=30, height=1)
 btn_productos.pack(pady=5)
 
-btn_pedidos = tk.Button(root, text="🛵 Ver Registro de Pedidos", command=mostrar_pantalla_pedidos, width=30, height=1)
+btn_pedidos = tk.Button(root, text="🛵 Ver Monitor de Pedidos", command=mostrar_pantalla_pedidos, width=30, height=1)
 btn_pedidos.pack(pady=5)
 
 btn_ver_det = tk.Button(root, text="🔎 Ver Contenido de un Pedido", command=ver_detalle_pedido, width=30, height=1)
 btn_ver_det.pack(pady=5)
 
-# Separador visual
 ttk.Separator(root, orient='horizontal').pack(fill='x', padx=50, pady=15)
 
-# --- Botones de Acción (CRUD) ---
-btn_crud_prod = tk.Button(root, text="⚙️ Administrar Productos", command=abrir_crud_productos, width=30, height=1, bg="#e0e0e0")
+btn_crud_prod = tk.Button(root, text="⚙️ Administrar Productos", command=abrir_crud_productos, width=30, height=1,
+                          bg="#e0e0e0")
 btn_crud_prod.pack(pady=5)
+
+btn_crud_det = tk.Button(root, text="🔗 Asignar Productos a Pedido", command=abrir_crud_detalle, width=30, height=1,
+                         bg="#e0e0e0")
+btn_crud_det.pack(pady=5)
+
+root.mainloop()
 
 btn_crud_det = tk.Button(root, text="🔗 Asignar Productos a Pedido", command=abrir_crud_detalle, width=30, height=1, bg="#e0e0e0")
 btn_crud_det.pack(pady=5)
